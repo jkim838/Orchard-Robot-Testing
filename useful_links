@@ -3,3 +3,9 @@ Depth Processing with Two Cameras
 > Distance measuring based on stereoscopic pictures (Jernej Mrovlje,  Damir Vrančić) 2008, http://dsc.ijs.si/files/papers/S101%20Mrovlje.pdf
 
 ROS basics
+
+ROS package for passing data from camera device to processing https://wiki.ros.org/image_proc 
+
+>OpenCV triangulation tutorials http://www.morethantechnical.com/2012/01/04/simple-triangulation-with-opencv-from-harley-zisserman-w-code/
+
+>http://www.morethantechnical.com/2015/03/16/bootstrapping-planar-ar-tracking-without-markers-wcode/
