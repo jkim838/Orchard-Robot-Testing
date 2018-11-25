@@ -9,3 +9,8 @@ ROS package for passing data from camera device to processing https://wiki.ros.o
 >OpenCV triangulation tutorials http://www.morethantechnical.com/2012/01/04/simple-triangulation-with-opencv-from-harley-zisserman-w-code/
 
 >http://www.morethantechnical.com/2015/03/16/bootstrapping-planar-ar-tracking-without-markers-wcode/
+
+AForge example with two webcams http://www.aforgenet.com/articles/step_to_stereo_vision/
+    >Maybe not usable but might be a good example for general method
+    
+OpenCV tutorial https://www.learnopencv.com/image-recognition-and-object-detection-part1/
