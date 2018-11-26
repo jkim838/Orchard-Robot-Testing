@@ -1,0 +1,18 @@
+<launch> 
+    <node pkg="urg_node" type="urg_node" name="urg_node"> 
+    </node> 
+    <node pkg="robot_driver" type="pioneer_laser_node" name="pioneer_laser_node" output="screen"> 
+    </node> 
+    <node pkg="rviz" type="rviz" name="rviz"> 
+    </node> 
+    <node pkg="rosaria" type="RosAria" name="RosAria"> 
+    </node> 
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"> 
+	<param name="map_update_interval" value="0.5" />
+	<param name="linearUpdate" value="0.3" />
+	<param name="angularUpdate" value="0.1" />
+	<param name="scan" value="scan" />
+    </node> 
+    <node pkg="tf" type="static_transform_publisher" name="baseLink_to_Laser" args="0.1 0 0.1 0 0 0 base_link laser 50"> 
+    </node> 
+</launch>

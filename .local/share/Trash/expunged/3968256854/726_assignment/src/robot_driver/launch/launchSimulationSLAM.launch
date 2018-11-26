@@ -1,0 +1,32 @@
+<launch>
+	<param name="use_sim_time " value="true" />
+	
+	<node pkg="robot_driver" type="pioneer_laser_node" name="pioneer_laser_node" output="screen">
+		<remap from="RosAria/cmd_vel" to="cmd_vel"/>
+	</node>
+	
+	<node pkg="stage_ros" type="stageros" name="stageros" args="$(find robot_driver)/world/myworld.world">
+		<remap from="base_scan" to="scan"/>
+	</node>
+
+	
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+		<param name="map_update_interval" value="0.5" />
+		<param name="linearUpdate" value="0.3" />
+		<param name="angularUpdate" value="0.1" />
+		<param name="scan" value="scan" />
+		<param name="delta" value="0.25" />
+		<param name="xmin" value="-2" />
+		<param name="ymin" value="-2" />
+		<param name="xmax" value="2" />
+		<param name="ymax" value="2" />
+    </node>
+	
+    <node pkg="tf" type="static_transform_publisher" name="baseLink_to_Laser" args="0.17 0 0.1 0 0 0 base_link laser 50">
+    </node>
+	
+	<node pkg="rviz" type="rviz" name="rviz" />
+
+
+</launch>
+
