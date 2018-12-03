@@ -13,7 +13,9 @@ ROS package for passing data from camera device to processing https://wiki.ros.o
 AForge example with two webcams http://www.aforgenet.com/articles/step_to_stereo_vision/
 >Maybe not usable but might be a good example for general method
     
-OpenCV tutorial https://www.learnopencv.com/image-recognition-and-object-detection-part1/
+OpenCV tutorial 
+>https://www.learnopencv.com/image-recognition-and-object-detection-part1/
+TRY THIS IF ABOVE DOESN'T WORK>https://pypi.org/project/opencv-python/ 
 
 TensorFlow Tutorial for Object Detection
 >https://www.youtube.com/watch?v=COlbP62-B-U
