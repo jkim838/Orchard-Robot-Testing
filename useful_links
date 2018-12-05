@@ -1,4 +1,4 @@
-Depth Processing with Two Cameras
+﻿Depth Processing with Two Cameras
 
 > Distance measuring based on stereoscopic pictures (Jernej Mrovlje,  Damir Vrančić) 2008, http://dsc.ijs.si/files/papers/S101%20Mrovlje.pdf
 
@@ -32,3 +32,15 @@ p3>https://www.youtube.com/watch?v=K_mFnvzyLvc
 p4>https://www.youtube.com/watch?v=kq2Gjv_pPe8
 p5>https://www.youtube.com/watch?v=JR8CmWyh2E8
 p6>https://www.youtube.com/watch?v=srPndLNMMpk&index=6&list=PLQVvvaa0QuDcNK5GeCQnxYnSSaar2tpku
+
+openCV to ROS package
+>https://wiki.ros.org/vision_opencv
+
+ROS + OpenCV tutorial
+>http://projectsfromtech.blogspot.com/2017/10/visual-object-recognition-in-ros-using.html
+
+More tutorials for computer vision - openCV
+>https://www.intorobotics.com/how-to-detect-and-track-object-with-opencv/
+
+Explanation (not too dry) about deep neural networks (has different types)
+>https://www.learnopencv.com/neural-networks-a-30000-feet-view-for-beginners/
