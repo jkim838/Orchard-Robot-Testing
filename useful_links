@@ -44,3 +44,6 @@ More tutorials for computer vision - openCV
 
 Explanation (not too dry) about deep neural networks (has different types)
 >https://www.learnopencv.com/neural-networks-a-30000-feet-view-for-beginners/
+
+Example of ROS object detect with 2D or 3D (looks for people in this case)
+>https://github.com/cagbal/ros_people_object_detection_tensorflow
