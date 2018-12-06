@@ -47,3 +47,7 @@ Explanation (not too dry) about deep neural networks (has different types)
 
 Example of ROS object detect with 2D or 3D (looks for people in this case)
 >https://github.com/cagbal/ros_people_object_detection_tensorflow
+>https://www.codeproject.com/Articles/1268309/%2fArticles%2f1268309%2fAdding-Object-Detection-with-TensorFlow-to-a-Robot
+
+code example
+>www.github.com/shinselrobots
