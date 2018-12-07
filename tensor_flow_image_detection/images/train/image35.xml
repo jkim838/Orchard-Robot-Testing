@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>image35.jpg</filename>
+	<path>/home/master/object-detection/images/image35.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>target</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>266</xmin>
+			<ymin>226</ymin>
+			<xmax>546</xmax>
+			<ymax>467</ymax>
+		</bndbox>
+	</object>
+</annotation>
