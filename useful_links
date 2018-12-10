@@ -51,3 +51,6 @@ Example of ROS object detect with 2D or 3D (looks for people in this case)
 
 code example
 >www.github.com/shinselrobots
+
+Good image showing concept for realsense -> ROS + openCV
+https://wiki.ros.org/IntelROSProject
