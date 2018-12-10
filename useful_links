@@ -57,3 +57,6 @@ https://wiki.ros.org/IntelROSProject
 
 ROS node for tensorflow
 >https://github.com/osrf/tensorflow_object_detector
+
+Using RealSense Camera for OpenCV
+>http://answers.opencv.org/question/52374/interface-intel-realsense-camera/
