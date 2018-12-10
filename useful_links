@@ -54,3 +54,6 @@ code example
 
 Good image showing concept for realsense -> ROS + openCV
 https://wiki.ros.org/IntelROSProject
+
+ROS node for tensorflow
+>https://github.com/osrf/tensorflow_object_detector
