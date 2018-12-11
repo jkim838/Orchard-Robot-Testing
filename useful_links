@@ -57,3 +57,6 @@ https://wiki.ros.org/IntelROSProject
 
 ROS node for tensorflow
 >https://github.com/osrf/tensorflow_object_detector
+
+Self flying Drone (some tensorflow info)
+>https://medium.com/nanonets/how-i-built-a-self-flying-drone-to-track-people-in-under-50-lines-of-code-7485de7f828e
