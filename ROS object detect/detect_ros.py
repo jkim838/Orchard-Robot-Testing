@@ -73,16 +73,17 @@ class Detector:
         self.image_pub = rospy.Publisher("debug_image",Image, queue_size=1)
         self.object_pub = rospy.Publisher("objects", Detection2DArray, queue_size=1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("image", Image, self.image_cb, queue_size=1, buff_size=2**24)
+        self.image_sub = rospy.Subscriber("image", Image, self.image_cb, queue_size=1, buff_size=2**24) 
+	# the main function listerns to the subscriber, and when data is received it is sent to the image_cb function
         self.sess = tf.Session(graph=detection_graph,config=config)
 
-    def image_cb(self, data):
+    def image_cb(self, data): #this function converts the image into RGB format
         objArray = Detection2DArray()
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8") # first its converted to bgr
         except CvBridgeError as e:
             print(e)
-        image=cv2.cvtColor(cv_image,cv2.COLOR_BGR2RGB)
+        image=cv2.cvtColor(cv_image,cv2.COLOR_BGR2RGB) # secondly its converted into RGB using cv2.convertColor function
 
         # the array based representation of the image will be used later in order to prepare the
         # result image with boxes and labels on it.
@@ -112,11 +113,11 @@ class Detector:
 
         objArray.detections =[]
         objArray.header=data.header
-        object_count=1
+        object_count=0
 
         for i in range(len(objects)):
             object_count+=1
-            objArray.detections.append(self.object_predict(objects[i],data.header,image_np,cv_image))
+            objArray.detections.append(self.object_predict(objects[i],data.header,image_np,cv_image,object_count))
 
         self.object_pub.publish(objArray)
 
@@ -129,12 +130,12 @@ class Detector:
         image_out.header = data.header
         self.image_pub.publish(image_out)
 
-    def object_predict(self,object_data, header, image_np,image):
+    def object_predict(self,object_data, header, image_np,image,ID):
         image_height,image_width,channels = image.shape
         obj=Detection2D()
         obj_hypothesis= ObjectHypothesisWithPose()
 
-        object_id=object_data[0]
+        object_id=ID
         object_score=object_data[1]
         dimensions=object_data[2]
 
