@@ -18,7 +18,7 @@ except ImportError:
 
 # ROS related imports
 import rospy
-from std_msgs.msg import String , Header
+from std_msgs.msg import String , Header, Float32MultiArray
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from vision_msgs.msg import Detection2D, Detection2DArray, ObjectHypothesisWithPose
@@ -71,10 +71,11 @@ class Detector:
 
     def __init__(self):
         self.image_pub = rospy.Publisher("debug_image",Image, queue_size=1)
+	self.position_pub = rospy.Publisher("position",Float32MultiArray, queue_size = 1)
         self.object_pub = rospy.Publisher("objects", Detection2DArray, queue_size=1)
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("image", Image, self.image_cb, queue_size=1, buff_size=2**24) 
-	# the main function listerns to the subscriber, and when data is received it is sent to the image_cb function
+	# the main function listens to the subscriber, and when data is received it is sent to the image_cb function
         self.sess = tf.Session(graph=detection_graph,config=config)
 
     def image_cb(self, data): #this function converts the image into RGB format
@@ -114,12 +115,15 @@ class Detector:
         objArray.detections =[]
         objArray.header=data.header
         object_count=0
+	positionInfo = Float32MultiArray()
 
         for i in range(len(objects)):
             object_count+=1
             objArray.detections.append(self.object_predict(objects[i],data.header,image_np,cv_image,object_count))
+	    positionInfo.data.append(12)
 
         self.object_pub.publish(objArray)
+        self.position_pub.publish(positionInfo)
 
         img=cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
         image_out = Image()
