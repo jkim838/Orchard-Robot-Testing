@@ -74,7 +74,7 @@ class Detector:
 	self.position_pub = rospy.Publisher("position",Float32MultiArray, queue_size = 1)
         self.object_pub = rospy.Publisher("objects", Detection2DArray, queue_size=1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("image", Image, self.image_cb, queue_size=1, buff_size=2**24) 
+        self.image_sub = rospy.Subscriber("image", Image, self.image_cb, queue_size=1, buff_size=2**24)
 	# the main function listens to the subscriber, and when data is received it is sent to the image_cb function
         self.sess = tf.Session(graph=detection_graph,config=config)
 
@@ -115,12 +115,35 @@ class Detector:
         objArray.detections =[]
         objArray.header=data.header
         object_count=0
+
+        #declare variable positionInfo of type "Float32MultiArray" to store coordinates of the detected object
 	positionInfo = Float32MultiArray()
 
         for i in range(len(objects)):
             object_count+=1
+            #objArray takes in returned value in type Detection2D, and appends it.
             objArray.detections.append(self.object_predict(objects[i],data.header,image_np,cv_image,object_count))
-	    positionInfo.data.append(12)
+            
+            #fetch coordinates...
+            #get the prediction for object, then access attribute "x" of "center" of "bbox".
+            target = self.object_predict(objects[i],data.header,image_np,cv_image,object_count)
+            x_coord = target.bbox.center.x
+            #get the prediction for object, then access attribute "y" of "center" of "bbox".
+            y_coord = target.bbox.center.y
+
+            #--- Left Out for Debug Purposes Do not Modify ---
+            #x_coord = objArray.detections[0].bbox.center.x #accessing attribute "x" of "center" of "bbox" in a element of list "detections" of objArray.
+            #y_coord = objArray.detections[0].bbox.center.y #accessing attribute "y" of "center" of "bbox" in a element of list "detections" of objArray.
+
+            #fetch score
+            score = target.results[0].score
+            
+            # append x-coordinate...
+	    positionInfo.data.append(x_coord)
+            # append y-coordinate...
+	    positionInfo.data.append(y_coord)
+	    #score
+	    positionInfo.data.append(score) 
 
         self.object_pub.publish(objArray)
         self.position_pub.publish(positionInfo)
@@ -149,11 +172,14 @@ class Detector:
         obj.results.append(obj_hypothesis)
         obj.bbox.size_y = int((dimensions[2]-dimensions[0])*image_height)
         obj.bbox.size_x = int((dimensions[3]-dimensions[1] )*image_width)
+        #the center point of x coordinate is determined here...
         obj.bbox.center.x = int((dimensions[1] + dimensions [3])*image_height/2)
+        #the center point of y coordinate is determined here...
         obj.bbox.center.y = int((dimensions[0] + dimensions[2])*image_width/2)
 
+        #detection results are returned as type Detection2D to objArray...
         return obj
-
+    
 def main(args):
     rospy.init_node('detector_node')
     obj=Detector()
