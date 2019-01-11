@@ -141,6 +141,7 @@ class Detector:
             # append x-coordinate...
 	    positionInfo.data.append(x_coord)
             # append y-coordinate...
+            #positionInfo.data.append(245)
 	    positionInfo.data.append(y_coord)
 	    #score
 	    positionInfo.data.append(score) 
