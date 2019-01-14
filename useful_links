@@ -67,3 +67,6 @@ Using RealSense Camera for OpenCV
 Depth realsense algorithim python
 >https://stackoverflow.com/questions/50802333/calculating-distance-from-intel-realsense-r200-depth-camera
 >https://github.com/intel/intel-iot-refkit/blob/master/meta-refkit-extra/doc/computervision.rst
+
+C example reading depth and distance using librealsense
+>https://github.com/IntelRealSense/librealsense/blob/master/examples/C/distance/rs-distance.c
