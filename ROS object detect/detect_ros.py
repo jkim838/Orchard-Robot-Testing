@@ -121,31 +121,40 @@ class Detector:
 
         for i in range(len(objects)):
             object_count+=1
-            #objArray takes in returned value in type Detection2D, and appends it.
+            # objArray takes in returned value in type Detection2D, and appends it.
             objArray.detections.append(self.object_predict(objects[i],data.header,image_np,cv_image,object_count))
             
-            #fetch coordinates...
-            #get the prediction for object, then access attribute "x" of "center" of "bbox".
+            # fetch coordinates...
+            # get the prediction for object, then access attribute "x" of "center" of "bbox".
             target = self.object_predict(objects[i],data.header,image_np,cv_image,object_count)
             x_coord = target.bbox.center.x
-            #get the prediction for object, then access attribute "y" of "center" of "bbox".
+            # get the prediction for object, then access attribute "y" of "center" of "bbox".
             y_coord = target.bbox.center.y
 
             #--- Left Out for Debug Purposes Do not Modify ---
-            #x_coord = objArray.detections[0].bbox.center.x #accessing attribute "x" of "center" of "bbox" in a element of list "detections" of objArray.
-            #y_coord = objArray.detections[0].bbox.center.y #accessing attribute "y" of "center" of "bbox" in a element of list "detections" of objArray.
+            #y_coord = objArray.detections[0].bbox.center.x #accessing attribute "x" of "center" of "bbox" in a element of list "detections" of objArray.
+            #x_coord = objArray.detections[0].bbox.center.y #accessing attribute "y" of "center" of "bbox" in a element of list "detections" of objArray.
 
-            #fetch score
+            # fetch score
             score = target.results[0].score
-            
-            # append x-coordinate...
-	    positionInfo.data.append(x_coord)
-            # append y-coordinate...
-            #positionInfo.data.append(245)
-	    positionInfo.data.append(y_coord)
-	    #score
-	    positionInfo.data.append(score) 
 
+            # append only if score is high enough...
+            if score >= 0.70:
+                
+                # append x-coordinate...
+                positionInfo.data.append(x_coord)
+                # append y-coordinate...
+                
+                #---Left out for Debug Purposes Do not Modify---
+                #positionInfo.data.append(245)
+
+                # append y-coordinate
+                positionInfo.data.append(y_coord)
+
+                # append detection score
+                positionInfo.data.append(score) 
+
+        # Publish topic...
         self.object_pub.publish(objArray)
         self.position_pub.publish(positionInfo)
 
