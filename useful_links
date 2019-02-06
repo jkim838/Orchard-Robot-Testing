@@ -70,3 +70,6 @@ Depth realsense algorithim python
 
 C example reading depth and distance using librealsense
 >https://github.com/IntelRealSense/librealsense/blob/master/examples/C/distance/rs-distance.c
+
+Depth accuracy versus camera resolution
+>>https://forums.intel.com/s/question/0D50P0000490VVjSAM/realsense-d435-distance-depends-on-aspect?language=en_US
