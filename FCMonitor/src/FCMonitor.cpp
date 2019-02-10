@@ -51,15 +51,11 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
 
         // we assume the viewing distance (horizontal) is 1042mm at 940mm between camera surface and the canopy.
         // because image is 640px wide, each pixel represents 1.63mm
-
-        // calculate the half of the view width...
-        // by default it should be 521mm (0.5 * 1042mm)
-        float width_mm = calculate_width();
-        // calculate millimeter per pixel...
-        float px_mm =  width_mm / 640; // mm per pxiel
-        // convert x-coordinate (in pixels) to millemeters...
+        float width_mm = calculate_width(); // calculate the viewing width...
+        float px_mm = width_mm / 640; // mm per pxiel
+        // convert x-coordinate to mm...
         float x_mm = array.data[i-1] * px_mm; // target location in mm (x-axis)
-	      
+	//Debugging Mode
 	test_value.data = (uint64_t)LASER_NUMBER_OFFSET - (uint64_t)(x_mm / LASER_FACTOR + 1);
         std::cout << "Target is " << x_mm << " mm away from the left corner." << std::endl;
 
