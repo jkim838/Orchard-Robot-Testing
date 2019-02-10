@@ -54,32 +54,13 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
 
         // calculate the half of the view width...
         // by default it should be 521mm (0.5 * 1042mm)
-        float half_width_mm = calculate_width() / 2;
+        float width_mm = calculate_width();
         // calculate millimeter per pixel...
-        float px_mm =  2 * half_width_mm / 640; // mm per pxiel
+        float px_mm =  width_mm / 640; // mm per pxiel
         // convert x-coordinate (in pixels) to millemeters...
         float x_mm = array.data[i-1] * px_mm; // target location in mm (x-axis)
-
-        float laser_mm = 0; // location of the target in respect to the laser panel...
-
-        // determine if the target is on the left-half/right-half side of the laser panel...
-        if(x_mm >= half_width_mm && x_mm < 2* half_width_mm + 1){
-          // the target is on right-half...
-          // 385mm offset for laser panel, (x_mm - half_width_mm) for offset from viewing widht center point
-          laser_mm = 385 + x_mm - half_width_mm;
-        }
-        else if(x_mm >= 0 && x_mm < half_width_mm){
-          // the target is on left-half...
-          laser_mm = 385 - (half_width_mm - x_mm);
-
-        }
-        std::cout << "Debug: Laser mm is" << laser_mm << std::endl;
-	      //Debugging Mode
-
-        /***
-        To-Do: convert laser_mm to laser number.
-        ***/
-	      test_value.data = (uint64_t)LASER_NUMBER_OFFSET - (uint64_t)(x_mm / LASER_FACTOR + 1);
+	      
+	test_value.data = (uint64_t)LASER_NUMBER_OFFSET - (uint64_t)(x_mm / LASER_FACTOR + 1);
         std::cout << "Target is " << x_mm << " mm away from the left corner." << std::endl;
 
         // x_mm information is returned and used somewhere else.
