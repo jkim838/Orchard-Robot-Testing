@@ -12,9 +12,8 @@
 #include <math.h>
 
 #define PI 3.14159265
-#define CENTER_MARGIN 50
-#define LASER_FACTOR 15.355
-#define LASER_NUMBER_OFFSET 33
+#define CENTER_MARGIN 5
+#define LASER_FACTOR 24.0625
 
 std_msgs::Float32MultiArray array;
 sensor_msgs::Image image_depth_array;
@@ -22,8 +21,7 @@ unsigned int height_center;
 unsigned int width_center;
 unsigned int maximum_depth;
 
-std_msgs::UInt64 test_value;
-std_msgs::Float32 test_variable; // casted target location in mm for messages.
+std_msgs::UInt64 laser_number;
 
 float calculate_width(){
 
@@ -51,16 +49,43 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
 
         // we assume the viewing distance (horizontal) is 1042mm at 940mm between camera surface and the canopy.
         // because image is 640px wide, each pixel represents 1.63mm
-        float width_mm = calculate_width(); // calculate the viewing width...
-        float px_mm = width_mm / 640; // mm per pxiel
-        // convert x-coordinate to mm...
-        float x_mm = array.data[i-1] * px_mm; // target location in mm (x-axis)
-	//Debugging Mode
-	test_value.data = (uint64_t)LASER_NUMBER_OFFSET - (uint64_t)(x_mm / LASER_FACTOR + 1);
-        std::cout << "Target is " << x_mm << " mm away from the left corner." << std::endl;
 
-        // x_mm information is returned and used somewhere else.
-        // array.data[i-1] = x_mm;
+        // calculate the half of the view width...
+        // by default it should be 521mm (0.5 * 1042mm)
+        float half_width_mm = calculate_width() / 2;
+        // calculate millimeter per pixel...
+        float px_mm =  2 * half_width_mm / 640; // mm per pxiel
+        // convert x-coordinate (in pixels) to millemeters...
+        float x_mm = array.data[i-1] * px_mm; // target location in mm (x-axis)
+
+        float laser_mm = 0; // location of the target in respect to the laser panel...
+
+        // determine if the target is on the left-half/right-half side of the laser panel...
+        if(x_mm >= half_width_mm && x_mm < 2* half_width_mm + 1){
+          // the target is on right-half...
+          // 385mm offset for laser panel, (x_mm - half_width_mm) for offset from viewing widht center point
+          laser_mm = 385 + x_mm - half_width_mm;
+        }
+        else if(x_mm >= 0 && x_mm < half_width_mm){
+          // the target is on left-half...
+          laser_mm = 385 - (half_width_mm - x_mm);
+
+        }
+        std::cout << "Debug: Laser mm is" << laser_mm << std::endl;
+	      //Debugging Mode
+
+        /***
+        To-Do: convert laser_mm to laser number.
+        ***/
+
+	      uint64_t laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+1;
+        if(laser_number_feed > 32){
+          laser_number_feed = 0;
+        }
+        laser_number.data = laser_number_feed;
+
+        std::cout << "Debug: Activating Laser: " << laser_number_feed << std::endl;
+
       }
     }
   }
@@ -103,7 +128,7 @@ int main(int argc, char **argv){
 
   while(ros::ok()){
     ros::spinOnce();
-    FC_pub.publish(test_value);
+    FC_pub.publish(laser_number);
     rate.sleep();
   }
 }
