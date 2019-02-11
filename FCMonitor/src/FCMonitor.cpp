@@ -13,8 +13,7 @@
 
 #define PI 3.14159265
 #define CENTER_MARGIN 50
-#define LASER_FACTOR 15.355
-#define LASER_NUMBER_OFFSET 33
+#define LASER_FACTOR 24
 
 std_msgs::Float32MultiArray array;
 sensor_msgs::Image image_depth_array;
@@ -22,8 +21,7 @@ unsigned int height_center;
 unsigned int width_center;
 unsigned int maximum_depth;
 
-std_msgs::UInt64 test_value;
-std_msgs::Float32 test_variable; // casted target location in mm for messages.
+std_msgs::UInt64 laser_number;
 
 float calculate_width(){
 
@@ -79,11 +77,15 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         /***
         To-Do: convert laser_mm to laser number.
         ***/
-	      test_value.data = (uint64_t)LASER_NUMBER_OFFSET - (uint64_t)(x_mm / LASER_FACTOR + 1);
-        std::cout << "Target is " << x_mm << " mm away from the left corner." << std::endl;
 
-        // x_mm information is returned and used somewhere else.
-        // array.data[i-1] = x_mm;
+	      uint64_t laser_number_feed = (uint64_t)(x_mm / LASER_FACTOR) + 1;
+        if(laser_number_feed > 32){
+          laser_number_feed = 31;
+        }
+        laser_number.data = laser_number_feed;
+
+        std::cout << "Debug: Activating Laser: " << laser_number_feed << std::endl;
+
       }
     }
   }
@@ -126,7 +128,7 @@ int main(int argc, char **argv){
 
   while(ros::ok()){
     ros::spinOnce();
-    FC_pub.publish(test_value);
+    FC_pub.publish(laser_number);
     rate.sleep();
   }
 }
