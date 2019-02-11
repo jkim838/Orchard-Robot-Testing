@@ -1,0 +1,13 @@
+<launch>
+  <arg name="bank_no" default="1"/>
+
+  <node name="shoot_laser_node" pkg="laser_control" type="shoot_laser_node">
+    <remap from="/nozzleBank" to="/nozzleBank_$(arg bank_no)"/>
+  </node>
+
+  <node name= "command_laser_node" pkg="laser_control" type="command_laser_node">
+  </node>
+
+</launch>
+
+
