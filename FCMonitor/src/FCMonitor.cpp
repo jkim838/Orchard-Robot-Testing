@@ -13,7 +13,7 @@
 
 #define PI 3.14159265
 #define CENTER_MARGIN 50
-#define LASER_FACTOR 24
+#define LASER_FACTOR 25
 
 std_msgs::Float32MultiArray array;
 sensor_msgs::Image image_depth_array;
@@ -78,9 +78,9 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         To-Do: convert laser_mm to laser number.
         ***/
 
-	      uint64_t laser_number_feed = (uint64_t)(x_mm / LASER_FACTOR) + 1;
+	      uint64_t laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR) + 1;
         if(laser_number_feed > 32){
-          laser_number_feed = 31;
+          laser_number_feed = 0;
         }
         laser_number.data = laser_number_feed;
 
