@@ -6,15 +6,22 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <vector>
 
+std_msgs::Float32MultiArray out;
+
+void object_array_builder(const vision_msgs::Detection2DArray::ConstPtr& data)
+{
+    
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "Depth_check");
     ros::NodeHandle DP_nh;
     std_msgs::Float32 toPub;
     // Subscriber Declaration...
-    //ros::Subscriber FC_coordinate_sub = FC_nh.subscribe("/position", 10, object_position);
+    ros::Subscriber DP_coordinate_sub = DP_nh.subscribe("/objects", 10, object_array_builder);
     // Publisher Declaration...
-    ros::Publisher DP_pub = DP_nh.advertise<std_msgs::Float32MultiArray>("/ObjectDepth",10);
+    ros::Publisher DP_pub = DP_nh.advertise<std_msgs::Float32>("/ObjectDepth",10);
     ros::Rate rate(10);
 
     // Create a Pipeline - this serves as a top-level API for streaming and processing frames
@@ -23,7 +30,7 @@ int main(int argc, char **argv)
     // Configure and start the pipeline
     p.start();
 
-    while (true)
+    while (ros::ok())
     {
         // Block program until frames arrive
         rs2::frameset frames = p.wait_for_frames();
@@ -42,9 +49,9 @@ int main(int argc, char **argv)
         toPub.data = depth.get_distance(width / 2, height / 2);
 
         // Print the distance
-        std::cout << "The camera is facing an object " << dist_to_center << " meters away \r";
+        std::cout << "The camera is facing an object " << dist_to_center << " meters away \n\r";
         
-        DP_pub.publish(dist_to_center);
+        DP_pub.publish(toPub);
         rate.sleep();
     }
 }
