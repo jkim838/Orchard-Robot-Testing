@@ -70,3 +70,6 @@ Depth realsense algorithim python
 
 C example reading depth and distance using librealsense
 >https://github.com/IntelRealSense/librealsense/blob/master/examples/C/distance/rs-distance.c
+
+Realsense config set up JSON config
+>https://github.com/IntelRealSense/librealsense/issues/1021
