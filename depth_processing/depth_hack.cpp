@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 30);
 
     // Configure and start the pipeline
-    p.start(cfg);
+    p.start();
 
     while (ros::ok())
     {
@@ -65,6 +65,11 @@ int main(int argc, char **argv)
         toPub.data = depth.get_distance(width / 2, height / 2);
 
         // Print the distance
+        std::cout << "The camera is facing an object " << dist_to_center << " meters away \n\r";
+
+        
+
+        // Print the distance from PC
         std::cout << "The camera is facing an object " << dist_to_center << " meters away \n\r";
         
         DP_pub.publish(toPub);
