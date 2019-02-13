@@ -10,6 +10,8 @@
 #include <iostream>
 #include <sensor_msgs/Image.h>
 #include <math.h>
+#include <librealsense2/rs.hpp>
+
 
 #define PI 3.14159265
 #define CENTER_MARGIN 5
@@ -22,6 +24,11 @@ unsigned int width_center;
 unsigned int maximum_depth;
 
 std_msgs::UInt64 laser_number;
+
+//rs2::pipeline p;
+
+//prototype
+float image_depth(float x, float y);
 
 float calculate_width(){
 
@@ -50,26 +57,38 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         // we assume the viewing distance (horizontal) is 1042mm at 940mm between camera surface and the canopy.
         // because image is 640px wide, each pixel represents 1.63mm
 
+        // calculate depth to target...
+        //float depth_to_target = image_depth(array.data[i-1], array.data[i]);
+
         // calculate the half of the view width...
         // by default it should be 521mm (0.5 * 1042mm)
         float half_width_mm = calculate_width() / 2;
         // calculate millimeter per pixel...
-        float px_mm =  2 * half_width_mm / 640; // mm per pxiel
+        float px_mm =  2 * half_width_mm / (width_center *2); // mm per pxiel
         // convert x-coordinate (in pixels) to millemeters...
         float x_mm = array.data[i-1] * px_mm; // target location in mm (x-axis)
 
         float laser_mm = 0; // location of the target in respect to the laser panel...
+        float x3 = 0;
+        float laser_correction = 0;
 
         // determine if the target is on the left-half/right-half side of the laser panel...
         if(x_mm >= half_width_mm && x_mm < 2* half_width_mm + 1){
           // the target is on right-half...
           // 385mm offset for laser panel, (x_mm - half_width_mm) for offset from viewing widht center point
-          laser_mm = 385 + x_mm - half_width_mm;
+          x3 = x_mm - half_width_mm;
+          laser_correction = (x3/2.824);
+          std::cout << "debug: right" << std::endl;
+          std::cout << "debug: correction factor: " << laser_correction << std::endl;
+          laser_mm = 385 + x3 - laser_correction;
         }
         else if(x_mm >= 0 && x_mm < half_width_mm){
           // the target is on left-half...
-          laser_mm = 385 - (half_width_mm - x_mm);
-
+          x3 = half_width_mm - x_mm;
+          laser_correction = (x3/2.824);
+          std::cout << "debug: left" << std::endl;
+          std::cout << "debug: correction factor: " << laser_correction << std::endl;
+          laser_mm = 385 - x3 + laser_correction;
         }
         std::cout << "Debug: Laser mm is" << laser_mm << std::endl;
 	      //Debugging Mode
@@ -78,7 +97,7 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         To-Do: convert laser_mm to laser number.
         ***/
 
-	    uint64_t laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+1;
+	      uint64_t laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+1;
         if(laser_number_feed > 32){
           laser_number_feed = 0;
         }
@@ -91,6 +110,20 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
   }
 }
 
+/*
+float image_depth(float x, float y){
+
+  std::cout << "POINT 1" << std::endl;
+  rs2::frameset frames = p.wait_for_frames();
+  std::cout << "POINT 2" << std::endl;
+  rs2::depth_frame depth = frames.get_depth_frame();
+  float depth_pixel = depth.get_distance(x,y);
+  std::cout << "Debug: Depth at target" << x << "," << y << " is: " << depth_pixel << "mm" << std::endl;
+  return depth_pixel;
+
+}
+*/
+
 void image_size(const sensor_msgs::Image::ConstPtr& image_data){
 
   // Subscribed to topic "image", obtain the dimension of the image (default: 640*480px)...
@@ -102,29 +135,19 @@ void image_size(const sensor_msgs::Image::ConstPtr& image_data){
 
 }
 
-/*
-void image_depth(const sensor_msgs::Image::ConstPtr& image_depth_data){
-  image_depth_array.data = image_depth_data->data;
-  std::cout << "Image Width: " << image_depth_data->width << std::endl;
-  std::cout << "Image Height: " << image_depth_data->height << std::endl;
-  std::cout << "Array Length is: " << image_depth_array.data.size() << std::endl;
-  // Iterate through entire array of depth...
-  //for(int i = 0; i < )
-}
-*/
-
 int main(int argc, char **argv){
   ros::init(argc, argv, "FC_control_node");
   ros::NodeHandle FC_nh;
   // Subscriber Declaration...
   ros::Subscriber FC_coordinate_sub = FC_nh.subscribe("/position", 10, object_position);
   ros::Subscriber FC_array_size_sub = FC_nh.subscribe("/debug_image", 10, image_size); // this is running multiple times?
-  // ros::Subscriber FC_depth_info_sub = FC_nh.subscribe("/camera/depth/image_rect_raw", 10, image_depth);
+  //ros::Subscriber FC_depth_info_sub = FC_nh.subscribe("/camera/depth/image_rect_raw", 10, image_depth);
 
   // Publisher Declaration...
   ros::Publisher FC_pub = FC_nh.advertise<std_msgs::UInt64>("/LaserNumber",10);
   ros::Rate rate(10);
 
+  //p.start();
 
   while(ros::ok()){
     ros::spinOnce();
