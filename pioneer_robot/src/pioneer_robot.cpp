@@ -10,8 +10,8 @@ geometry_msgs::Twist pioneer_vel;
 float yaw_angle;
 tf::Pose pose;
  float desiredAngle = 0;
- float kp = 3;
- float ki = 1500;
+ float kp = 2.5;
+ float ki = 500;
  float integral;
 
 //IMPORTANT:Motors are set to m/s therefore setting anything above 1 is pretty fast
@@ -34,7 +34,7 @@ void pioneer_position(const nav_msgs::Odometry::ConstPtr& odometerData){
 	pioneer_vel.angular.z = kp*error + ki*integral;
 	
  }
-	pioneer_vel.linear.x = 0.1;
+	pioneer_vel.linear.x = 0.03;
 	sleep(0.0001);
 }
 
