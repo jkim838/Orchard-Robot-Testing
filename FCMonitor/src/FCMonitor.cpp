@@ -14,7 +14,7 @@
 
 
 #define PI 3.14159265
-#define CENTER_MARGIN 5
+#define CENTER_MARGIN 20
 #define LASER_FACTOR 24.0625
 
 std_msgs::Float32MultiArray array;
@@ -71,24 +71,27 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         float laser_mm = 0; // location of the target in respect to the laser panel...
         float x3 = 0;
         float laser_correction = 0;
+        uint64_t laser_number_feed = 0;
 
         // determine if the target is on the left-half/right-half side of the laser panel...
         if(x_mm >= half_width_mm && x_mm < 2* half_width_mm + 1){
           // the target is on right-half...
           // 385mm offset for laser panel, (x_mm - half_width_mm) for offset from viewing widht center point
           x3 = x_mm - half_width_mm;
-          laser_correction = (x3/2.824);
+          laser_correction = (x3/2.8249);
           std::cout << "debug: right" << std::endl;
           std::cout << "debug: correction factor: " << laser_correction << std::endl;
           laser_mm = 385 + x3 - laser_correction;
+          laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+1;
         }
         else if(x_mm >= 0 && x_mm < half_width_mm){
           // the target is on left-half...
           x3 = half_width_mm - x_mm;
-          laser_correction = (x3/2.824);
+          laser_correction = (x3/2.8249);
           std::cout << "debug: left" << std::endl;
           std::cout << "debug: correction factor: " << laser_correction << std::endl;
           laser_mm = 385 - x3 + laser_correction;
+          laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+2;
         }
         std::cout << "Debug: Laser mm is" << laser_mm << std::endl;
 	      //Debugging Mode
@@ -97,7 +100,6 @@ void object_position(const std_msgs::Float32MultiArray::ConstPtr& data){
         To-Do: convert laser_mm to laser number.
         ***/
 
-	      uint64_t laser_number_feed = (uint64_t)(laser_mm / LASER_FACTOR)+1;
         if(laser_number_feed > 32){
           laser_number_feed = 0;
         }
