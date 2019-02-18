@@ -80,3 +80,6 @@ Depth accuracy versus camera resolution
 
 Image stream projection
 >https://putuyuwono.wordpress.com/2016/03/17/realsense-sdk-calibrate-color-and-depth-stream/
+
+Depth message background (good to understand encoding of depth image msg)
+>http://www.ros.org/reps/rep-0118.html
