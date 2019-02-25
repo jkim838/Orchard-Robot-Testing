@@ -1,8 +1,0 @@
-<launch>
-
-  <node name= "FC_control_node" pkg="FCMonitor" type="FC_control_node">
-  </node>
-
-</launch>
-
-
