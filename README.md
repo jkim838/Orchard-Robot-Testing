@@ -10,12 +10,12 @@ Summer Research Program - the University of Auckland - Orchard Robot Testing, 20
 ## Tasks:
 1. TensorFlow
  * [x] Training TensorFlow
- * [ ] Improving Accuracy
+ * [x] Improving Accuracy
  * [x] Using RealSense Camera
 2. Robot Module
  * [x] Controlling Laser Module
  * [x] Controlling Pioneer Robot
 3. Integration
  * [x] Developing ROS Package
- * [ ] Developing Control Interface
- * [ ] Testing the rig
+ * [x] Developing Control Interface
+ * [x] Testing the rig
