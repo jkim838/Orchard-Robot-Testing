@@ -110,8 +110,10 @@ Clone standard vision message repository and object detection package to *catkin
 ```
 cd ~/catkin_ws/src
 git clone https://github.com/Kukanani/vision_msgs.git
-git clone http://github.com/osrf/tensorflow_object_detector.git
 ```
+
+Copy the contents of *ROS Object Detect* in this repository to *~/catkin_ws/src*
+
 Build *tensorflow_object_detector* and *vision_msgs* with the following command,
 
 ```
