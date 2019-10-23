@@ -227,107 +227,152 @@ Recompile and install *librealsense* binaries with the following command,
 sudo make uninstall && make clean && make && sudo make install
 ```
 
-### **3. Downloading YOLO v3 Weights**
+### **3. Setup ROSAria**
 
-Detailed instructions can be found [here](https://pjreddie.com/darknet/yolo/)
+For additional information, refer to [How to use ROSAria](http://wiki.ros.org/ROSARIA/Tutorials/How%20to%20use%20ROSARIA)
 
-On Ubuntu terminal, navigate to darknetROS weights folder with following command,
-
-```
-cd ~/catkin_ws/src/145P4P2019/Darknet/darknet_ros/yolo_network_config/weights
-```
-
-Download YOLO v3 weights with following command,
+On Ubuntu terminal, navigate to *catkin_ws/src* and clone ROSAria code with the following command,
 
 ```
-wget http://pjreddie.com/media/files/yolov3.weights
+cd ~/catkin_ws/src
+git clone https://github.com/amor-ros-pkg/rosaria.git
 ```
-
-### **4. Launching the program**
-
-Before the program can be launched, configuration file and video footage must be added. 
-
-#### 4.1. Downloading test footage
-
-Test video feed can be downloaded [feed 1](https://drive.google.com/a/aucklanduni.ac.nz/file/d/11DbnBG_t5Tyv-5L1mUAk4-CXi7P1IunO/view?usp=sharing) [feed 2](https://drive.google.com/a/aucklanduni.ac.nz/file/d/17Z0YiTIONWPNcTx-7_iVbtsURefJj_d0/view?usp=sharing) [feed 3](https://drive.google.com/a/aucklanduni.ac.nz/file/d/1lTpoba_gsLt-nPxb-FFMbl5VyYxBuswq/view?usp=sharing)
-
-Copy and paste the video files to *video_stream_opencv* folder, located at *~/catkin_ws/src/145P4P2019/video_stream_opencv*
-
-#### 4.2. Adding configuration file 
-
-Navigate to *~/catkin_ws/src/145P4P2019* folder.
-
-Copy and Paste *ros_video_input_test.yaml* file to *~/catkin_ws/src/145P4P2019/Darknet/darknet_ros/config* 
-
-Navigate back to *~/catkin_ws/src/145P4P2019* folder
-
-On Ubuntu terminal, launch the program with following command:
-
-  * to launch program while recording *.bag* file,
+Download [ROSAria package](https://github.com/reedhedges/AriaCoda). Extract the content and *make* with the following command,
 
 ```
-roslaunch video_feed.launch
+cd ~/$PATH_TO_DOWNLOADED_FILE/AriaCoda-master
+make
 ```
 
-  * to launch program without recording *.bag* file,
+Once *make* is complete, install ARIA with the following command,
 
 ```
-roslaunch video_feed_nobag.launch
+sudo make install
 ```
 
-  * to change the video feed, open the launch file, and change the path to the video file,
-  
-```
-<arg name="video_stream_provider" value="/$PATH_TO_FILE/VIDEOFILE_NAME.mp4" />
-```
-
-#### 4.3. Saving Statistics
-
-To save JSON output file, press *s* on the terminal.
-
-To exit program, press *ctrl+c*.
-
-### **5. Using MATLAB Script**
-
-To use MATLAB analyser script on JSON output file, move the JSON file to *MATLAB* folder, located at *~/catkin_ws/src/145P4P2019/MATLAB*
-
-Open MATLAB script *openJSON.m* and change the following code,
+After a successful install, there will be a message,
 
 ```
-% define name of file to be opened
-fname = '30fps-90sec-sample.json';
+add "/usr/local/Aria/lib" to /etc/ld.so.conf or add it to the LD_LIBRARY_PATH environment variable
 ```
 
-Run the script to generate statistics.
+If so, navigate to *etc* and open *ld.so.conf* file with the following command,
 
-## Output Example
-### Live Interface View Example
-![detection1a-030](Screenshot/demo_picture.png "Detection Example")
+```
+cd /etc
+sudo nano ld.so.conf
+```
 
-### Statistics Output Example
-![statistics](Screenshot/combined_graph.png "Statistics Output Example")
+Once the file is open, on the bottom of the file, add
+
+```
+/usr/local/Aria/lib
+```
+
+Press **ctrl+o** to save and **ctrl+x** to exit.
+
+Once ROSAria is installed, navigate back to *catkin_ws* and compile ROSAria with the following command,
+
+```
+cd ~/catkin_ws
+catkin_make
+source devel/setup.bash
+```
+
+To connect to the Pioneer Robot, open a new instance of Ubuntu terminal and type,
+
+```
+roscore
+```
+
+On the previous instance of Ubuntu terminal, launch ROSAria node with the following command,
+
+```
+rosrun rosaira rosaria
+```
+
+#### Troubleshooting ROSAria
+
+For message *[FATAL]: ROSAria: ROS node setup failed...*, manually configure parameters to establish connection.
+
+On Ubuntu terminal, try the following command,
+
+```
+sudo chmod 777 /dev/ttyUSB0
+rosrun rosaria rosaria _port:=/dev/ttyUSB0
+```
+
+### **4. Laser Control**
+
+Terminate any instance of *ROSCORE* with **ctrl+c**
+
+On Ubuntu terminal, configure IP for Ethernet interface between ROS and the laser module with the following command,
+
+```
+sudo ifconfig enp0s25 192.168.21.64
+```
+
+#### **4.1. Troubleshooting Laser Control**
+
+By default, laser module package is already included in this repository. If no executable is found, refer to following steps.
+
+Download the contents of *laser_control* folder and paste it to *catkin_ws/src*
+
+On Ubuntu terminal, navigate to *catkin_ws* folder and *make* with the following command,
+
+```
+cd catkin_ws
+catkin_make
+source devel/setup.bash
+```
+
+On a new instance of Ubuntu terminal, launch *ROSCORE* with the following command,
+
+```
+roscore
+```
+
+On the previous instance of Ubuntu terminal, create ROS package with the following command,
+
+```
+cd ~/catkin_ws/src
+catkin_create_pkg laser_control std_msgs rospy roscpp
+cd ..
+catkin_make
+~/devel/setup.bash
+```
+
+In *~catkin_ws/src/laser_control*, edit *CMakeLists.txt* at **line 121**
+
+```
+add_executable( shoot_laser_node src/shoot_laser.cpp)
+target_link_libraries(shoot_laser_node ${catkin_LIBRARIES})
+add_dependencies(shoot_laser_node ${catkin_EXPORTED_TARGETS})
+```
+
+Close and save the file. Perform *catkin_make* again to start building with the modified CMAKE file.
 
 
+### **5. Launching the Platform**
 
+Add robot maneuvering feature to the system by copyng the contents of *pioneer_robot* from the repository to *catkin_ws/src*
 
-Orchard-Robot-Testing
-======================
+Add fire-control monitor feature (FCMonitor) to the system by copying the contents of *FCMonitor* from the repository to *~/catkin_ws/src*
 
+On Ubuntu terminal, to launch the robot with all of its feature enabled, type
 
-## Contributors: 
-* Oliver Kim @jkim838
-* James Flood @floodski
-* Jiahui Wang @jiahui747
+```
+roscore
+```
+On a new instance of Ubuntu terminal, use the following command,
 
-## Tasks:
-1. TensorFlow
- * [x] Training TensorFlow
- * [x] Improving Accuracy
- * [x] Using RealSense Camera
-2. Robot Module
- * [x] Controlling Laser Module
- * [x] Controlling Pioneer Robot
-3. Integration
- * [x] Developing ROS Package
- * [x] Developing Control Interface
- * [x] Testing the rig
+```
+sudo ifconfig enp0s25 192.168.64.21
+sudo chmod 777 /dev/ttyUSB0
+cd ~/catkin_ws
+catkin_make
+source devel/setup.bash
+cd ~/catkin_ws/src
+roslaunch FCMonitor FC.launch
+rosrun pioneer_robot pioneer_robot
+```
