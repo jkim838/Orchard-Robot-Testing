@@ -1,6 +1,7 @@
 # The University of Auckland 
 ## Faculty of Engineering, Department of Electrical, Computer Systems, and Software Engineering
-### Undergraduate Summer Research Program. Orchard Robot Testing, 2018.
+### Undergraduate Summer Research Program. Orchard Robot Testing, 2018. 
+### NOTE: THIS REPOSITORY IS NO LONGER MAINTAINED
 #### Contributors
 #### * Oliver Kim (@jkim838, jkim838@aucklanduni.ac.nz)
 #### * James Flood (@floodski, jflo015@aucklanduni.ac.nz)
